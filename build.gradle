@@ -11,7 +11,7 @@ else
     logger.lifecycle "No build number detected, setting to DEV"
 
 group 'dev.theturkey.twitch-minimal'
-version "${version}.${buildnumber}"
+version = "${version}.${buildnumber}"
 
 repositories {
     mavenCentral()
