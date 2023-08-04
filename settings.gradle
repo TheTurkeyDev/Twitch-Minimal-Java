@@ -1,0 +1,5 @@
+rootProject.name = 'twitch-minimal'
+include 'websocket-irc', 'rest-api'
+
+version=0.3
+

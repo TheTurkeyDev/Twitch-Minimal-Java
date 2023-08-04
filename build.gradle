@@ -1,0 +1,47 @@
+plugins {
+    id 'java'
+    id 'maven-publish'
+}
+apply plugin: 'idea'
+
+ext.buildnumber = 'DEV'
+if (System.getenv('BUILD_NUMBER') != null)
+    project.buildnumber = System.getenv('BUILD_NUMBER')
+else
+    logger.lifecycle "No build number detected, setting to DEV"
+
+group 'dev.theturkey.twitch-minimal'
+version "${version}.${buildnumber}"
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation project(':websocket-irc')
+}
+
+jar {
+    from project(":websocket-irc").sourceSets.main.output.classesDirs
+}
+
+publishing {
+    repositories {
+        maven {
+            name = "TurkeyDev Maven Repository"
+            url = "https://maven.theturkey.dev/releases"
+            credentials(PasswordCredentials)
+            authentication {
+                basic(BasicAuthentication)
+            }
+        }
+    }
+    publications {
+        maven(MavenPublication) {
+            groupId = "dev.theturkey"
+            artifactId = "twitch-minimal"
+            version = "${version}.${buildnumber}"
+            from components.java
+        }
+    }
+}

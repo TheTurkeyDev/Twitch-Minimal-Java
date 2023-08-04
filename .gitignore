@@ -1,0 +1,4 @@
+.gradle/
+.idea/
+build/
+rest-api/src/test/java/Secret.java
