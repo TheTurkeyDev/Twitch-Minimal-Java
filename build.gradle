@@ -28,7 +28,7 @@ jar {
 publishing {
     repositories {
         maven {
-            name = "TurkeyDev Maven Repository"
+            name = "TurkeyDev-Maven-Repository"
             url = "https://maven.theturkey.dev/releases"
             credentials(PasswordCredentials)
             authentication {
