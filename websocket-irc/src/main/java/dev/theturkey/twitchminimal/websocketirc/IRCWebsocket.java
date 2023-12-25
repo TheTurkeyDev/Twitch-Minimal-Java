@@ -137,7 +137,7 @@ public class IRCWebsocket
 	}
 
 	public boolean isConnected(){
-		return client.getReadyState() == ReadyState.OPEN;
+		return client != null && client.getReadyState() == ReadyState.OPEN;
 	}
 
 	public void sendRaw(String s)
