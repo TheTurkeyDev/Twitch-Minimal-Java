@@ -1,6 +1,7 @@
 package dev.theturkey.twitchminimal.websocketirc;
 
 import org.java_websocket.client.WebSocketClient;
+import org.java_websocket.enums.ReadyState;
 import org.java_websocket.handshake.ServerHandshake;
 
 import java.net.URI;
@@ -21,8 +22,6 @@ public class IRCWebsocket
 
 	private WebSocketClient client;
 
-	private boolean connected = false;
-
 	private final ScheduledExecutorService messageQueueExecutor;
 	private final Map<String, List<String>> messageQueue = new HashMap<>();
 
@@ -40,10 +39,10 @@ public class IRCWebsocket
 			List<String> channelsToSend = new ArrayList<>(messageQueue.keySet());
 			for(String chan : channelsToSend)
 			{
-				if(messageQueue.get(chan).size() > 0)
+				if(!messageQueue.get(chan).isEmpty())
 				{
 					sendRaw("PRIVMSG " + getChannelClean(chan) + " :" + messageQueue.get(chan).remove(0));
-					if(messageQueue.get(chan).size() == 0)
+					if(messageQueue.get(chan).isEmpty())
 						messageQueue.remove(chan);
 				}
 			}
@@ -85,7 +84,6 @@ public class IRCWebsocket
 			@Override
 			public void onOpen(ServerHandshake handshake)
 			{
-				connected = true;
 				sendRaw("PASS " + TwitchIRCWebSocketCore.botOAuth);
 				sendRaw("NICK " + TwitchIRCWebSocketCore.botName);
 			}
@@ -138,14 +136,13 @@ public class IRCWebsocket
 		return this;
 	}
 
-	public boolean isConnected()
-	{
-		return connected;
+	public boolean isConnected(){
+		return client.getReadyState() == ReadyState.OPEN;
 	}
 
 	public void sendRaw(String s)
 	{
-		if(connected)
+		if(isConnected())
 			client.send(s);
 	}
 
